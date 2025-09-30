@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe - My Recipe Book</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="add-recipe-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>My Recipe Book</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#recipes" class="nav-link">Recipes</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                <li class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search recipes..." class="search-input">
+                    <i class="fas fa-search search-icon"></i>
+                </li>
+                <li class="user-section">
+                    <div class="user-dropdown">
+                        <button class="user-btn" id="userBtn">
+                            <i class="fas fa-user"></i>
+                            <span id="userBtnText">Account</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown-menu" id="userDropdown">
+                            <div class="user-menu-guest" id="guestMenu">
+                                <a href="#" class="dropdown-item" onclick="openLoginModal()">Login</a>
+                                <a href="#" class="dropdown-item" onclick="openSignupModal()">Create Account</a>
+                            </div>
+                            <div class="user-menu-logged" id="loggedMenu" style="display: none;">
+                                <div class="user-info">
+                                    <span id="welcomeUser">Welcome, User!</span>
+                                </div>
+                                <a href="#" class="dropdown-item" onclick="showProfile()">My Profile</a>
+                                <a href="#" class="dropdown-item" onclick="showMyRecipes()">My Recipes</a>
+                                <a href="#" class="dropdown-item admin-only" id="adminPanel" onclick="showAdminPanel()" style="display: none;">Admin Panel</a>
+                                <hr class="dropdown-divider">
+                                <a href="#" class="dropdown-item" onclick="logout()">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Add Recipe Form -->
+    <main class="add-recipe-main">
+        <div class="container">
+            <div class="form-header">
+                <h1><i class="fas fa-plus-circle"></i> Add Your Recipe</h1>
+                <p>Share your culinary creation with the world</p>
+            </div>
+
+            <form id="recipeForm" class="recipe-form">
+                <!-- Recipe Name -->
+                <div class="form-group">
+                    <label for="recipeName">
+                        <i class="fas fa-utensils"></i>
+                        Recipe Name *
+                    </label>
+                    <input type="text" id="recipeName" name="recipeName" required placeholder="Enter the name of your dish">
+                    <span class="error-message" id="recipeNameError"></span>
+                </div>
+
+                <!-- Recipe Description -->
+                <div class="form-group">
+                    <label for="recipeDescription">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </label>
+                    <textarea id="recipeDescription" name="recipeDescription" rows="3" placeholder="Brief description of your recipe"></textarea>
+                </div>
+
+                <!-- Recipe Category -->
+                <div class="form-group">
+                    <label for="recipeCategory">
+                        <i class="fas fa-tags"></i>
+                        Category
+                    </label>
+                    <select id="recipeCategory" name="recipeCategory">
+                        <option value="">Select a category</option>
+                        <option value="appetizer">Appetizer</option>
+                        <option value="main-course">Main Course</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="beverage">Beverage</option>
+                        <option value="snack">Snack</option>
+                        <option value="soup">Soup</option>
+                        <option value="salad">Salad</option>
+                        <option value="breakfast">Breakfast</option>
+                    </select>
+                </div>
+
+                <!-- Cooking Info -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prepTime">
+                            <i class="fas fa-clock"></i>
+                            Prep Time (minutes)
+                        </label>
+                        <input type="number" id="prepTime" name="prepTime" min="1" placeholder="15">
+                    </div>
+                    <div class="form-group">
+                        <label for="cookTime">
+                            <i class="fas fa-fire"></i>
+                            Cook Time (minutes)
+                        </label>
+                        <input type="number" id="cookTime" name="cookTime" min="1" placeholder="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="servings">
+                            <i class="fas fa-users"></i>
+                            Servings
+                        </label>
+                        <input type="number" id="servings" name="servings" min="1" placeholder="4">
+                    </div>
+                </div>
+
+                <!-- Ingredients -->
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-shopping-list"></i>
+                        Ingredients *
+                    </label>
+                    <div class="ingredients-container">
+                        <div class="ingredient-item">
+                            <input type="text" name="ingredients" placeholder="e.g., 2 cups flour" required>
+                            <button type="button" class="remove-ingredient" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="addIngredient" class="add-button">
+                        <i class="fas fa-plus"></i> Add Ingredient
+                    </button>
+                    <span class="error-message" id="ingredientsError"></span>
+                </div>
+
+                <!-- Recipe Steps -->
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-list-ol"></i>
+                        Cooking Instructions *
+                    </label>
+                    <div class="steps-container">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <textarea name="steps" placeholder="Describe the first step..." required></textarea>
+                            <button type="button" class="remove-step" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="addStep" class="add-button">
+                        <i class="fas fa-plus"></i> Add Step
+                    </button>
+                    <span class="error-message" id="stepsError"></span>
+                </div>
+
+                <!-- Recipe Image -->
+                <div class="form-group">
+                    <label for="recipeImage">
+                        <i class="fas fa-image"></i>
+                        Recipe Image
+                    </label>
+                    <div class="image-upload">
+                        <input type="file" id="recipeImage" name="recipeImage" accept="image/*">
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <span>PNG, JPG, GIF up to 5MB</span>
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="previewImage" src="" alt="Recipe preview">
+                            <button type="button" id="removeImage" class="remove-image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="form-group">
+                    <label for="recipeNotes">
+                        <i class="fas fa-sticky-note"></i>
+                        Additional Notes
+                    </label>
+                    <textarea id="recipeNotes" name="recipeNotes" rows="3" placeholder="Any tips, variations, or additional information..."></textarea>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="window.location.href='index.html'">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-save"></i>
+                        Save Recipe
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>Recipe Added Successfully!</h2>
+            </div>
+            <div class="modal-body">
+                <p>Your recipe has been saved and is now available in the recipe collection.</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="window.location.href='index.html'" class="modal-btn primary">
+                    View All Recipes
+                </button>
+                <button onclick="window.location.href='add-recipe.html'" class="modal-btn">
+                    Add Another Recipe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="auth-modal" style="display: none;">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2>Login to Your Account</h2>
+                <button class="close-btn" onclick="closeAuthModals()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email or Username</label>
+                    <input type="text" id="loginEmail" name="loginEmail" required>
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="loginPassword" required>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <a href="#" onclick="switchToSignup()">Create Account</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="auth-modal" style="display: none;">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2>Create Your Account</h2>
+                <button class="close-btn" onclick="closeAuthModals()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="signupName" required>
+                    <span class="error-message" id="signupNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="signupEmail" required>
+                    <span class="error-message" id="signupEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" name="signupUsername" required>
+                    <span class="error-message" id="signupUsernameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="signupPassword" required>
+                    <span class="error-message" id="signupPasswordError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <a href="#" onclick="switchToLogin()">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="auth-modal" style="display: none;">
+        <div class="modal-content admin-modal-content">
+            <div class="modal-header">
+                <h2>Admin Panel</h2>
+                <button class="close-btn" onclick="closeAdminModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="admin-content">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="showAdminTab('users')">Users</button>
+                    <button class="admin-tab" onclick="showAdminTab('recipes')">Recipes</button>
+                    <button class="admin-tab" onclick="showAdminTab('stats')">Statistics</button>
+                </div>
+                <div class="admin-tab-content">
+                    <div id="adminUsers" class="tab-panel active">
+                        <h3>User Management</h3>
+                        <div id="usersList" class="users-list"></div>
+                    </div>
+                    <div id="adminRecipes" class="tab-panel">
+                        <h3>Recipe Management</h3>
+                        <div id="recipesList" class="recipes-list"></div>
+                    </div>
+                    <div id="adminStats" class="tab-panel">
+                        <h3>Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>Total Users</h4>
+                                <span id="totalUsers">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Total Recipes</h4>
+                                <span id="totalRecipes">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Active Sessions</h4>
+                                <span id="activeSessions">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="add-recipe.js"></script>
+</body>
+</html>

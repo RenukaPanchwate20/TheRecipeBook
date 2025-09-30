@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Detail - My Recipe Book</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="recipe-detail-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>My Recipe Book</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#recipes" class="nav-link">Recipes</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                <li class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search recipes..." class="search-input">
+                    <i class="fas fa-search search-icon"></i>
+                </li>
+                <li class="user-section">
+                    <div class="user-dropdown">
+                        <button class="user-btn" id="userBtn">
+                            <i class="fas fa-user"></i>
+                            <span id="userBtnText">Account</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown-menu" id="userDropdown">
+                            <div class="user-menu-guest" id="guestMenu">
+                                <a href="#" class="dropdown-item" onclick="openLoginModal()">Login</a>
+                                <a href="#" class="dropdown-item" onclick="openSignupModal()">Create Account</a>
+                            </div>
+                            <div class="user-menu-logged" id="loggedMenu" style="display: none;">
+                                <div class="user-info">
+                                    <span id="welcomeUser">Welcome, User!</span>
+                                </div>
+                                <a href="#" class="dropdown-item" onclick="showProfile()">My Profile</a>
+                                <a href="#" class="dropdown-item" onclick="showMyRecipes()">My Recipes</a>
+                                <a href="#" class="dropdown-item admin-only" id="adminPanel" onclick="showAdminPanel()" style="display: none;">Admin Panel</a>
+                                <hr class="dropdown-divider">
+                                <a href="#" class="dropdown-item" onclick="logout()">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Recipe Detail Content -->
+    <main class="recipe-detail-main">
+        <div class="container">
+            <!-- Back Button -->
+            <div class="back-button">
+                <button onclick="window.history.back()" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Recipes
+                </button>
+            </div>
+
+            <!-- Recipe Header -->
+            <div class="recipe-header" id="recipeHeader">
+                <!-- Content will be dynamically loaded -->
+                <div class="recipe-image-container">
+                    <img id="recipeImage" src="https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Recipe Image">
+                    <div class="recipe-overlay">
+                        <div class="recipe-category" id="recipeCategory">Main Course</div>
+                    </div>
+                </div>
+                <div class="recipe-info">
+                    <h1 id="recipeTitle">Spaghetti Carbonara</h1>
+                    <p id="recipeDescription">Classic Italian pasta dish with eggs, cheese, and pancetta</p>
+                    
+                    <div class="recipe-meta-info">
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Prep: <span id="prepTime">10</span> mins</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-fire"></i>
+                            <span>Cook: <span id="cookTime">15</span> mins</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span>Serves: <span id="servings">4</span></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span>Difficulty: <span id="difficulty">Medium</span></span>
+                        </div>
+                    </div>
+
+                    <div class="recipe-actions">
+                        <button class="action-btn favorite-btn" id="favoriteBtn">
+                            <i class="far fa-heart"></i>
+                            Add to Favorites
+                        </button>
+                        <button class="action-btn share-btn" onclick="shareRecipe()">
+                            <i class="fas fa-share-alt"></i>
+                            Share Recipe
+                        </button>
+                        <button class="action-btn print-btn" onclick="window.print()">
+                            <i class="fas fa-print"></i>
+                            Print Recipe
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recipe Content -->
+            <div class="recipe-content">
+                <!-- Ingredients Section -->
+                <div class="ingredients-section">
+                    <h2><i class="fas fa-shopping-list"></i> Ingredients</h2>
+                    <div class="servings-adjuster">
+                        <label for="servingSize">Adjust servings:</label>
+                        <div class="serving-controls">
+                            <button id="decreaseServing" class="serving-btn">-</button>
+                            <input type="number" id="servingSize" value="4" min="1" max="20">
+                            <button id="increaseServing" class="serving-btn">+</button>
+                        </div>
+                    </div>
+                    <ul class="ingredients-list" id="ingredientsList">
+                        <li>
+                            <input type="checkbox" id="ingredient1">
+                            <label for="ingredient1">400g spaghetti pasta</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient2">
+                            <label for="ingredient2">200g pancetta or guanciale, diced</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient3">
+                            <label for="ingredient3">4 large egg yolks</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient4">
+                            <label for="ingredient4">100g Pecorino Romano cheese, grated</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient5">
+                            <label for="ingredient5">2 cloves garlic, minced</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient6">
+                            <label for="ingredient6">Salt and black pepper to taste</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="ingredient7">
+                            <label for="ingredient7">2 tablespoons olive oil</label>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Instructions Section -->
+                <div class="instructions-section">
+                    <h2><i class="fas fa-list-ol"></i> Instructions</h2>
+                    <div class="instructions-list" id="instructionsList">
+                        <div class="instruction-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <p>Bring a large pot of salted water to boil. Add spaghetti and cook according to package directions until al dente.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step1">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <p>While pasta cooks, heat olive oil in a large skillet over medium heat. Add pancetta and cook until crispy, about 5-7 minutes.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step2">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <p>Add minced garlic to the pancetta and cook for another minute until fragrant.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step3">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <p>In a bowl, whisk together egg yolks and grated Pecorino Romano cheese until well combined.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step4">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <p>Reserve 1 cup of pasta cooking water, then drain the spaghetti.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step5">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <p>Add the hot pasta to the skillet with pancetta. Remove from heat immediately.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step6">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">7</div>
+                            <div class="step-content">
+                                <p>Quickly add the egg and cheese mixture, tossing rapidly to coat the pasta. Add pasta water gradually until you achieve a creamy consistency.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step7">
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">8</div>
+                            <div class="step-content">
+                                <p>Season with black pepper and serve immediately while hot. Garnish with extra cheese if desired.</p>
+                            </div>
+                            <div class="step-checkbox">
+                                <input type="checkbox" id="step8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Section -->
+                <div class="notes-section" id="notesSection">
+                    <h2><i class="fas fa-sticky-note"></i> Chef's Notes</h2>
+                    <div class="notes-content">
+                        <p>The key to perfect carbonara is timing and temperature. Make sure to remove the pan from heat before adding the egg mixture to prevent scrambling. The residual heat from the pasta and pan will cook the eggs gently.</p>
+                        <p>Traditional carbonara doesn't include cream - the creaminess comes from the eggs and cheese combined with the starchy pasta water.</p>
+                    </div>
+                </div>
+
+                <!-- Nutrition Info -->
+                <div class="nutrition-section">
+                    <h2><i class="fas fa-chart-pie"></i> Nutrition Information</h2>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <span class="nutrition-label">Calories</span>
+                            <span class="nutrition-value">520</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-label">Protein</span>
+                            <span class="nutrition-value">22g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-label">Carbs</span>
+                            <span class="nutrition-value">68g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-label">Fat</span>
+                            <span class="nutrition-value">18g</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Recipes -->
+            <div class="related-recipes">
+                <h2>You Might Also Like</h2>
+                <div class="related-grid">
+                    <div class="related-card" onclick="viewRecipe('chicken-tikka')">
+                        <img src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Chicken Tikka">
+                        <h3>Chicken Tikka Masala</h3>
+                    </div>
+                    <div class="related-card" onclick="viewRecipe('chocolate-cake')">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Chocolate Cake">
+                        <h3>Chocolate Cake</h3>
+                    </div>
+                    <div class="related-card" onclick="viewRecipe('caesar-salad')">
+                        <img src="https://images.unsplash.com/photo-1551248429-40975aa4de74?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Caesar Salad">
+                        <h3>Caesar Salad</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="auth-modal" style="display: none;">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2>Login to Your Account</h2>
+                <button class="close-btn" onclick="closeAuthModals()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email or Username</label>
+                    <input type="text" id="loginEmail" name="loginEmail" required>
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="loginPassword" required>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <a href="#" onclick="switchToSignup()">Create Account</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="auth-modal" style="display: none;">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2>Create Your Account</h2>
+                <button class="close-btn" onclick="closeAuthModals()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="signupName" required>
+                    <span class="error-message" id="signupNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="signupEmail" required>
+                    <span class="error-message" id="signupEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" name="signupUsername" required>
+                    <span class="error-message" id="signupUsernameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="signupPassword" required>
+                    <span class="error-message" id="signupPasswordError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <a href="#" onclick="switchToLogin()">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="auth-modal" style="display: none;">
+        <div class="modal-content admin-modal-content">
+            <div class="modal-header">
+                <h2>Admin Panel</h2>
+                <button class="close-btn" onclick="closeAdminModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="admin-content">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="showAdminTab('users')">Users</button>
+                    <button class="admin-tab" onclick="showAdminTab('recipes')">Recipes</button>
+                    <button class="admin-tab" onclick="showAdminTab('stats')">Statistics</button>
+                </div>
+                <div class="admin-tab-content">
+                    <div id="adminUsers" class="tab-panel active">
+                        <h3>User Management</h3>
+                        <div id="usersList" class="users-list"></div>
+                    </div>
+                    <div id="adminRecipes" class="tab-panel">
+                        <h3>Recipe Management</h3>
+                        <div id="recipesList" class="recipes-list"></div>
+                    </div>
+                    <div id="adminStats" class="tab-panel">
+                        <h3>Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>Total Users</h4>
+                                <span id="totalUsers">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Total Recipes</h4>
+                                <span id="totalRecipes">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Active Sessions</h4>
+                                <span id="activeSessions">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="recipe-detail.js"></script>
+</body>
+</html>
