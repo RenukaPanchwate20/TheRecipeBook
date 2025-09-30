@@ -286,7 +286,7 @@
 
 .instruction-step {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     gap: 20px;
     align-items: flex-start;
     padding: 20px;
@@ -323,17 +323,6 @@
     font-size: 1rem;
 }
 
-.step-checkbox {
-    display: flex;
-    align-items: flex-start;
-    padding-top: 5px;
-}
-
-.step-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #e74c3c;
-}
 
 /* Notes Section */
 .notes-section {

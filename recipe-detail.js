@@ -8,7 +8,6 @@ function initializeRecipeDetail() {
     loadRecipeData();
     setupServingAdjuster();
     setupIngredientCheckboxes();
-    setupStepCheckboxes();
     setupFavoriteButton();
 }
 
@@ -100,9 +99,6 @@ function updateInstructionsList(instructions) {
             <div class="step-number">${index + 1}</div>
             <div class="step-content">
                 <p>${instruction}</p>
-            </div>
-            <div class="step-checkbox">
-                <input type="checkbox" id="step${index + 1}">
             </div>
         </div>
     `).join('');
@@ -226,20 +222,6 @@ function setupIngredientCheckboxes() {
     });
 }
 
-function setupStepCheckboxes() {
-    document.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox' && e.target.id.startsWith('step')) {
-            const step = e.target.closest('.instruction-step');
-            if (e.target.checked) {
-                step.style.opacity = '0.6';
-                step.style.background = '#e8f5e8';
-            } else {
-                step.style.opacity = '1';
-                step.style.background = '#f8f9fa';
-            }
-        }
-    });
-}
 
 // Favorite Button
 function setupFavoriteButton() {
